@@ -9,7 +9,6 @@ class Player
     @cursor = [0, 0]
     @board = board
     @color = color
-
   end
 
   KEYS = [
@@ -29,7 +28,6 @@ class Player
   end
 
   private
-
 
   def handle_cursor(input)
 
@@ -52,7 +50,7 @@ class Player
     end
 
     @cursor = [keep_within_bounds(row), keep_within_bounds(col)]
-    board.active_moveset = board[cursor].possible_moves
+    board.active_moveset = board[cursor].possible_moves unless board.selected
 
     board.render(cursor)
   end

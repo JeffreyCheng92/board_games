@@ -22,15 +22,26 @@ class Checkers
 
   def play
     board.render([0,0])
+
     until board.game_over?
         current_player = players.first
+        puts "#{current_player.color.to_s.capitalize}'s turn!"
+
         start_pos = get_start_pos(current_player)
         end_pos = get_end_pos(current_player, start_pos)
+
         board[start_pos].move!(end_pos)
-        board.render(end_pos)
-        players.last.cursor = end_pos
-        change_turn
+        finish_turn(end_pos)
+
     end
+  end
+
+  private
+
+  def finish_turn(end_pos)
+    board.render(end_pos)
+    players.last.cursor = end_pos
+    change_turn
   end
 
   def get_start_pos(player)
@@ -45,6 +56,7 @@ class Checkers
       retry
     end
     board.selected = true
+    board.selected_moveset = board[start_pos].possible_moves
     start_pos
   end
 

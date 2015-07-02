@@ -6,7 +6,7 @@ require 'colorize'
 
 class Board
   attr_reader :grid
-  attr_accessor :active_moveset, :selected
+  attr_accessor :active_moveset, :selected, :selected_moveset
 
   COLORS = [:red, :light_black]
   BLACK_ROWS = [5, 6, 7]
@@ -18,7 +18,6 @@ class Board
     @selected = false
     seed_pieces
   end
-
 
   def [](pos)
     row, col = pos
@@ -36,9 +35,10 @@ class Board
 
     puts "    A  B  C  D  E  F  G  H"
     @grid.each_with_index do |row, i|
-      bg_constant = i % 2
-
+      bg_constant = (i % 2)
       row_string = row.map.with_index do |piece, j|
+        @active_moveset = selected_moveset if selected
+
         if [i, j] == cursor
           self[[i, j]].to_s.colorize(:background => :yellow)
         elsif active_moveset.include?([i, j])
@@ -47,6 +47,7 @@ class Board
           bg_color = COLORS[(bg_constant + j) % 2]
           self[[i, j]].to_s.colorize(:background => bg_color)
         end
+
       end
       puts "#{i.to_s}  #{row_string.join}"
     end

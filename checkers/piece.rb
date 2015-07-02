@@ -1,6 +1,5 @@
 require 'colorize'
 
-
 class Piece
   attr_accessor :king, :pos
   attr_reader :color, :board
@@ -42,7 +41,6 @@ class Piece
   def to_s
     (king? ? " ☣ " : " ☢ ").colorize(:"#{@color}")
   end
-
 
   private
 
@@ -115,5 +113,4 @@ class Piece
     board[end_pos] = Piece.new(board, end_pos, color, king)
     board[pos] = EmptyPiece.new
   end
-
 end
