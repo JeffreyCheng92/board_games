@@ -32,9 +32,13 @@ class Piece
     possible_jumps + possible_slides
   end
 
+  def to_s
+    (king? ? " ☣ " : " ☢ ").colorize(:"#{@color}")
+  end
+
 
   private
-  
+
   def possible_jumps
     jumps = []
 
@@ -62,10 +66,6 @@ class Piece
       new_pos = [pos[0] + vector[0], pos[1] + vector[1]]
       array << new_pos if board[new_pos].empty?
     end
-  end
-
-  def to_s
-    (king? ? " ☣ " : " ☢ ").colorize(:"#{@color}")
   end
 
   def move_diffs

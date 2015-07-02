@@ -6,12 +6,13 @@ require 'colorize'
 
 class Board
   attr_reader :grid
+  attr_accessor :active_moveset
+
   COLORS = [:red, :light_black]
 
   def initialize
-    @grid = Array.new(8){ Array.new(8) {EmptyPiece.new}  }
-    @cursor = [0,0]
-    @active_moveset
+    @grid = Array.new(8){ Array.new(8) {EmptyPiece.new} }
+    @active_moveset = []
   end
 
   def seed_pieces
@@ -60,15 +61,6 @@ class Board
   def render(cursor)
 
     system("clear")
-    # possible_moves = []
-    #
-    # if selected
-    #   possible_moves = selected_moves
-    #   selected = false
-    #
-    # else
-    #   possible_moves = self[cursor].possible_moves unless self[cursor].empty?
-    # end
 
     puts "    A  B  C  D  E  F  G  H"
     @grid.each_with_index do |row, i|
@@ -76,9 +68,8 @@ class Board
       row_string = row.map.with_index do |piece, j|
         if [i, j] == cursor
           self[[i, j]].to_s.colorize(:background => :yellow)
-        # elsif (HIGHLIGHT MOVES HERE)
-        # HIGHLIGHT MOVES HERE
-        #HIGHLIGHT MOVES HERE
+        elsif active_moveset.include?([i, j])
+          self[[i, j]].to_s.colorize(:background => :green)
         elsif bg_constant
           bg_color = COLORS[(bg_constant + j) % 2]
           self[[i, j]].to_s.colorize(:background => bg_color)

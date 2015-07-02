@@ -53,6 +53,7 @@ class Player
     end
 
     @cursor = [keep_within_bounds(row), keep_within_bounds(col)]
+    board.active_moveset = board[cursor].possible_moves
 
     board.render(cursor)
   end
