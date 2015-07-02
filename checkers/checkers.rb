@@ -6,6 +6,17 @@ load 'keypress.rb'
 
 class Checkers
 
+  def initialize
+    board = Board.new
+    @players = [Player.new(board, :white), Player.new(board, :black)]
+  end
+
+  def play
+    until board.game_over?
+
+    end
+  end
+
 end
 
 

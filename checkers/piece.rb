@@ -17,7 +17,20 @@ class Piece
   end
 
   def move!(end_pos)
+    if possible_slides.include?(end_pos)
+      board[end_pos] = Piece.new(board, end_pos, color, king)
+      board[pos] = EmptyPiece.new
+    elsif possible_jumps.include?(end_pos)
+      dead_piece_pos = [(pos[0] + end_pos[0]) / 2, (pos[1] + end_pos[1]) / 2]
+      board[end_pos] = Piece.new(board, end_pos, color, king)
+      board[dead_piece_pos] = EmptyPiece.new
+    else
+      puts "Invalid move!"
+    end
+  end
 
+  def possible_moves
+    possible_jumps + possible_slides
   end
 
   def perform_slide(target_pos)
@@ -26,10 +39,6 @@ class Piece
 
   def perform_jump(target_jump)
     possible_jumps.include?(target_jump)
-  end
-
-  def possible_moves
-    possible_jumps + possible_slides
   end
 
   def to_s
@@ -46,7 +55,8 @@ class Piece
     vectors.each do |vector|
       new_pos = [pos[0] + vector[0], pos[1] + vector[1]]
       if !board[new_pos].empty? && board[new_pos].color != color
-        jumps << [new_pos[0] + vector[0], new_pos[1] + vector[1]]
+        jump_pos = [new_pos[0] + vector[0], new_pos[1] + vector[1]]
+        jumps << jump_pos if jump_pos.empty?
       end
     end
 

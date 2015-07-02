@@ -1,5 +1,5 @@
 class EmptyPiece
-  attr_reader :king
+  attr_reader :king, :color
 
   def initialize
     @king = false

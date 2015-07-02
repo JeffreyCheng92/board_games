@@ -65,6 +65,7 @@ class Board
     puts "    A  B  C  D  E  F  G  H"
     @grid.each_with_index do |row, i|
       bg_constant = i % 2
+
       row_string = row.map.with_index do |piece, j|
         if [i, j] == cursor
           self[[i, j]].to_s.colorize(:background => :yellow)
@@ -73,10 +74,7 @@ class Board
         elsif bg_constant
           bg_color = COLORS[(bg_constant + j) % 2]
           self[[i, j]].to_s.colorize(:background => bg_color)
-
         end
-      #  cursor_helper(i, j, possible_moves, cursor)
-
       end
       puts "#{i.to_s}  #{row_string.join}"
     end
@@ -90,19 +88,23 @@ class Board
     pos.all? { |coord| coord.between?(0, 7) }
   end
 
+  def game_over?
+    all_pieces_same_color?
+  end
+
   private
 
-  # def cursor_helper(idx1, idx2, moves_array, cursor)
-  #   if [idx1, idx2] == cursor
-  #     self[[idx1, idx2]].to_s.colorize(:background => :yellow)
-  #   elsif moves_array.include?([idx1, idx2])
-  #     self[[idx1, idx2]].to_s.colorize(:background => :green)
-  #   else
-  #     render_helper(idx1, idx2)
-  #   end
-  # end
+  def all_pieces_same_color?
+    all_pieces_black? || all_pieces_white?
+  end
 
+  def all_pieces_black?
+    grid.flatten.all? { |piece| piece.color == :black || piece.color == ""}
+  end
 
+  def all_pieces_white?
+    grid.flatten.all? { |piece| piece.color == :white|| piece.color == ""}
+  end
 
 
 
