@@ -6,47 +6,19 @@ require 'colorize'
 
 class Board
   attr_reader :grid
-  attr_accessor :active_moveset
+  attr_accessor :active_moveset, :selected
 
   COLORS = [:red, :light_black]
+  BLACK_ROWS = [5, 6, 7]
+  WHITE_ROWS = [0, 1, 2]
 
   def initialize
     @grid = Array.new(8){ Array.new(8) {EmptyPiece.new} }
     @active_moveset = []
+    @selected = false
+    seed_pieces
   end
 
-  def seed_pieces
-    seed_black_pieces
-    seed_white_pieces
-  end
-
-  def seed_white_pieces
-    (0..2).each do |row|
-      if row.even?
-        (0..7).each do |col|
-          self[[row, col]] = Piece.new(self, [row, col], :white) if col.odd?
-        end
-      else
-        (0..7).each do |col|
-          self[[row, col]] = Piece.new(self, [row, col], :white) if col.even?
-        end
-      end
-    end
-  end
-
-  def seed_black_pieces
-    (5..7).each do |row|
-      if row.odd?
-        (0..7).each do |col|
-          self[[row, col]] = Piece.new(self, [row, col], :black) if col.even?
-        end
-      else
-        (0..7).each do |col|
-          self[[row, col]] = Piece.new(self, [row, col], :black) if col.odd?
-        end
-      end
-    end
-  end
 
   def [](pos)
     row, col = pos
@@ -80,10 +52,6 @@ class Board
     end
   end
 
-  def inspect
-    nil
-  end
-
   def on_board?(pos)
     pos.all? { |coord| coord.between?(0, 7) }
   end
@@ -93,6 +61,10 @@ class Board
   end
 
   private
+
+  def inspect
+    nil
+  end
 
   def all_pieces_same_color?
     all_pieces_black? || all_pieces_white?
@@ -106,7 +78,22 @@ class Board
     grid.flatten.all? { |piece| piece.color == :white|| piece.color == ""}
   end
 
-
-
+  def seed_pieces
+    positions = [0, 2, 4 ,6]
+    (0..7).each do |row|
+      seed_constant = row % 2
+      if WHITE_ROWS.include?(row)
+        positions.each do |num|
+          col = seed_constant + num
+          self[[row, col]] = Piece.new(self, [row, col], :white)
+        end
+      elsif BLACK_ROWS.include?(row)
+        positions.each do |num|
+          col = seed_constant + num
+          self[[row, col]] = Piece.new(self, [row, col], :black)
+        end
+      end
+    end
+  end
 
 end

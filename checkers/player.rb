@@ -21,7 +21,6 @@ class Player
   ]
 
   def move_cursor
-
       while true
         char = read_char
         break unless handle_cursor(char)

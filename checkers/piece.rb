@@ -24,9 +24,11 @@ class Piece
       dead_piece_pos = [(pos[0] + end_pos[0]) / 2, (pos[1] + end_pos[1]) / 2]
       board[end_pos] = Piece.new(board, end_pos, color, king)
       board[dead_piece_pos] = EmptyPiece.new
+      board[pos] = EmptyPiece.new
     else
       puts "Invalid move!"
     end
+    maybe_promote(end_pos)
   end
 
   def possible_moves
@@ -48,15 +50,24 @@ class Piece
 
   private
 
+  def maybe_promote(pos)
+    if color == :white && pos[0] == 7
+      @king = true
+    elsif color == :black && pos[0] == 0
+      @king = true
+    end
+  end
+
   def possible_jumps
     jumps = []
 
     vectors = move_diffs
     vectors.each do |vector|
       new_pos = [pos[0] + vector[0], pos[1] + vector[1]]
+      next unless board.on_board?(new_pos)
       if !board[new_pos].empty? && board[new_pos].color != color
         jump_pos = [new_pos[0] + vector[0], new_pos[1] + vector[1]]
-        jumps << jump_pos if jump_pos.empty?
+        jumps << jump_pos if board.on_board?(jump_pos) && board[jump_pos].empty?
       end
     end
 
@@ -74,6 +85,7 @@ class Piece
     vectors = move_diffs
     vectors.each do |vector|
       new_pos = [pos[0] + vector[0], pos[1] + vector[1]]
+      next unless board.on_board?(new_pos)
       array << new_pos if board[new_pos].empty?
     end
   end
