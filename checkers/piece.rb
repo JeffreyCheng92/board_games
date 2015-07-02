@@ -18,13 +18,9 @@ class Piece
 
   def move!(end_pos)
     if possible_slides.include?(end_pos)
-      board[end_pos] = Piece.new(board, end_pos, color, king)
-      board[pos] = EmptyPiece.new
+      move_helper(end_pos)
     elsif possible_jumps.include?(end_pos)
-      dead_piece_pos = [(pos[0] + end_pos[0]) / 2, (pos[1] + end_pos[1]) / 2]
-      board[end_pos] = Piece.new(board, end_pos, color, king)
-      board[dead_piece_pos] = EmptyPiece.new
-      board[pos] = EmptyPiece.new
+      jump_helper(end_pos)
     else
       puts "Invalid move!"
     end
@@ -52,9 +48,9 @@ class Piece
 
   def maybe_promote(pos)
     if color == :white && pos[0] == 7
-      @king = true
+      board[pos].king = true
     elsif color == :black && pos[0] == 0
-      @king = true
+      board[pos].king = true
     end
   end
 
@@ -108,6 +104,16 @@ class Piece
     king
   end
 
+  def jump_helper(end_pos)
+    dead_piece_pos = [(pos[0] + end_pos[0]) / 2, (pos[1] + end_pos[1]) / 2]
+    board[end_pos] = Piece.new(board, end_pos, color, king)
+    board[dead_piece_pos] = EmptyPiece.new
+    board[pos] = EmptyPiece.new
+  end
 
+  def move_helper(end_pos)
+    board[end_pos] = Piece.new(board, end_pos, color, king)
+    board[pos] = EmptyPiece.new
+  end
 
 end
