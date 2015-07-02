@@ -5,24 +5,45 @@ require 'byebug'
 require 'colorize'
 
 class Board
-  attr_accessor :move_array, :selected, :selected_moves
   attr_reader :grid
 
 
   def initialize
     @grid = Array.new(8){ Array.new(8) {EmptyPiece.new}  }
-    @selected = false
-    @selected_moves = []
+    @cursor = [0,0]
   end
 
   def seed_pieces
-    [[1, "blue"], [6, "red"]].each do |place|
-      grid[place[0]].each_with_index do |tile, idx|
-         self[[place[0], idx]] = Pawn.new(self, [place[0], idx], place[1])
+    seed_black_pieces
+    seed_white_pieces
+  end
+
+  def seed_white_pieces
+    (0..2).each do |row|
+      if row.even?
+        (0..7).each do |col|
+          self[[row, col]] = Piece.new(self, [row, col], :white) if col.odd?
+        end
+      else
+        (0..7).each do |col|
+          self[[row, col]] = Piece.new(self, [row, col], :white) if col.even?
+        end
       end
     end
+  end
 
-
+  def seed_black_pieces
+    (5..7).each do |row|
+      if row.odd?
+        (0..7).each do |col|
+          self[[row, col]] = Piece.new(self, [row, col], :black) if col.even?
+        end
+      else
+        (0..7).each do |col|
+          self[[row, col]] = Piece.new(self, [row, col], :black) if col.odd?
+        end
+      end
+    end
   end
 
   def [](pos)
@@ -37,56 +58,64 @@ class Board
 
   def render(cursor)
     system("clear")
-    possible_moves = []
-
-    if selected
-      possible_moves = selected_moves
-      selected = false
-
-    else
-      possible_moves = self[cursor].possible_moves unless self[cursor].empty?
-    end
+    # possible_moves = []
+    #
+    # if selected
+    #   possible_moves = selected_moves
+    #   selected = false
+    #
+    # else
+    #   possible_moves = self[cursor].possible_moves unless self[cursor].empty?
+    # end
 
     puts "    A   B   C   D   E   F   G   H"
     @grid.each_with_index do |row, i|
       row_string = row.map.with_index do |piece, j|
-
-        cursor_helper(i, j, possible_moves, cursor)
+        if [i, j] == cursor
+          self[[i, j]].to_s.colorize(:background => :yellow)
+        # elsif (HIGHLIGHT MOVES HERE)
+        # HIGHLIGHT MOVES HERE
+        #HIGHLIGHT MOVES HERE
+        elsif i.even?
+          if j.odd?
+            self[[i,j]].to_s.colorize(background: :red)
+          else
+            self[[i,j]].to_s.colorize(background: :light_black)
+          end
+        else
+          if j.even?
+            self[[i,j]].to_s.colorize(background: :red)
+          else
+            self[[i,j]].to_s.colorize(background: :light_black)
+          end
+        end
+      #  cursor_helper(i, j, possible_moves, cursor)
 
       end
       puts "#{i.to_s}  #{row_string.join}"
     end
   end
 
+  def inspect
+    nil
+  end
 
 
 
 
   private
 
-  def cursor_helper(idx1, idx2, moves_array, cursor)
-    if [idx1, idx2] == cursor
-      self[[idx1, idx2]].to_s.colorize(:background => :yellow)
-    elsif moves_array.include?([idx1, idx2])
-      self[[idx1, idx2]].to_s.colorize(:background => :green)
-    else
-      render_helper(idx1, idx2)
-    end
-  end
+  # def cursor_helper(idx1, idx2, moves_array, cursor)
+  #   if [idx1, idx2] == cursor
+  #     self[[idx1, idx2]].to_s.colorize(:background => :yellow)
+  #   elsif moves_array.include?([idx1, idx2])
+  #     self[[idx1, idx2]].to_s.colorize(:background => :green)
+  #   else
+  #     render_helper(idx1, idx2)
+  #   end
+  # end
 
 
-
-
-  def render_helper(idx1, idx2)
-    color_switch = [self[[idx1, idx2]].to_s.colorize(:background => :red),
-      self[[idx1, idx2]].to_s.colorize(:background => :black)]
-
-    if idx1.even?
-       idx2.even? ? color_switch[0] : color_switch[1]
-    else
-       idx2.even? ? color_switch[1] : color_switch[0]
-    end
-  end
 
 
 

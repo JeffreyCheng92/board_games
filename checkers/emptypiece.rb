@@ -21,4 +21,7 @@ class EmptyPiece
     []
   end
 
+  def inspect
+    nil
+  end
 end
