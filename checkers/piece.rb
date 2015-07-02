@@ -16,23 +16,44 @@ class Piece
     false
   end
 
-  def move
+  def move!(end_pos)
 
   end
 
   def perform_slide(target_pos)
-    possible_moves.include?(target_pos)
+    possible_slides.include?(target_pos)
   end
 
-  def perform_jump
-
+  def perform_jump(target_jump)
+    possible_jumps.include?(target_jump)
   end
 
   def possible_moves
+    possible_jumps + possible_slides
+  end
+
+
+  private
+  
+  def possible_jumps
+    jumps = []
+
+    vectors = move_diffs
+    vectors.each do |vector|
+      new_pos = [pos[0] + vector[0], pos[1] + vector[1]]
+      if !board[new_pos].empty? && board[new_pos].color != color
+        jumps << [new_pos[0] + vector[0], new_pos[1] + vector[1]]
+      end
+    end
+
+    jumps.select { |jump| board.on_board?(jump) }
+  end
+
+  def possible_slides
     moves = []
     vector_add(moves)
 
-    moves.select { |move| move.all? { |coord| coord.between?(0, 7) } }
+    moves.select { |move| board.on_board?(move) }
   end
 
   def vector_add(array)
@@ -44,7 +65,7 @@ class Piece
   end
 
   def to_s
-    (king? ? " ☣  " : " ☢  ").colorize(:"#{@color}")
+    (king? ? " ☣ " : " ☢ ").colorize(:"#{@color}")
   end
 
   def move_diffs

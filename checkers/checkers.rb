@@ -10,9 +10,11 @@ end
 
 
 b = Board.new
+
 b.seed_pieces
-p b[[5,0]].possible_moves
-p b[[5,0]].perform_slide([4,4])
-# p = Player.new(b, :red)
-# b.render(p.cursor)
-# p.move_cursor
+# b[[5,0]] = Piece.new(b, [5,0], :black)
+# b[[4,1]] = Piece.new(b, [4,1], :white)
+# p b[[5,0]].possible_moves
+p = Player.new(b, :red)
+b.render(p.cursor)
+p.move_cursor

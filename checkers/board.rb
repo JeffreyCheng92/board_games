@@ -6,11 +6,12 @@ require 'colorize'
 
 class Board
   attr_reader :grid
-
+  COLORS = [:red, :light_black]
 
   def initialize
     @grid = Array.new(8){ Array.new(8) {EmptyPiece.new}  }
     @cursor = [0,0]
+    @active_moveset
   end
 
   def seed_pieces
@@ -57,6 +58,7 @@ class Board
   end
 
   def render(cursor)
+
     system("clear")
     # possible_moves = []
     #
@@ -68,26 +70,19 @@ class Board
     #   possible_moves = self[cursor].possible_moves unless self[cursor].empty?
     # end
 
-    puts "    A   B   C   D   E   F   G   H"
+    puts "    A  B  C  D  E  F  G  H"
     @grid.each_with_index do |row, i|
+      bg_constant = i % 2
       row_string = row.map.with_index do |piece, j|
         if [i, j] == cursor
           self[[i, j]].to_s.colorize(:background => :yellow)
         # elsif (HIGHLIGHT MOVES HERE)
         # HIGHLIGHT MOVES HERE
         #HIGHLIGHT MOVES HERE
-        elsif i.even?
-          if j.odd?
-            self[[i,j]].to_s.colorize(background: :red)
-          else
-            self[[i,j]].to_s.colorize(background: :light_black)
-          end
-        else
-          if j.even?
-            self[[i,j]].to_s.colorize(background: :red)
-          else
-            self[[i,j]].to_s.colorize(background: :light_black)
-          end
+        elsif bg_constant
+          bg_color = COLORS[(bg_constant + j) % 2]
+          self[[i, j]].to_s.colorize(:background => bg_color)
+
         end
       #  cursor_helper(i, j, possible_moves, cursor)
 
@@ -100,8 +95,9 @@ class Board
     nil
   end
 
-
-
+  def on_board?(pos)
+    pos.all? { |coord| coord.between?(0, 7) }
+  end
 
   private
 

@@ -10,7 +10,7 @@ class EmptyPiece
   end
 
   def to_s
-    "    "
+    "   "
   end
 
   def color
