@@ -13,12 +13,12 @@ class InvalidMoveError < StandardError
 end
 
 class Checkers
-  attr_reader :board, :players, :jumping_jump
+  attr_reader :board, :players, :multiple_jump
 
   def initialize
     @board = Board.new
     @players = [Player.new(board, :white), Player.new(board, :black)]
-    @jumping_jump = false
+    @multiple_jump = false
   end
 
   def play
@@ -31,34 +31,21 @@ class Checkers
         start_pos = get_start_pos(current_player)
         end_pos = get_end_pos(current_player, start_pos)
 
-        # board[start_pos].move!(end_pos)
-
         jump_again = false
         until jump_again
           # debugger
-          if @jumping_jump || board[start_pos].possible_jumps.include?(end_pos)
+          if @multiple_jump || board[start_pos].possible_jumps.include?(end_pos)
 
               board[start_pos].move!(end_pos) unless board[start_pos].empty?
 
-              if board[end_pos].possible_jumps.length == 1
-                start_pos = end_pos
-                end_pos = board[start_pos].possible_jumps.first
-                board[start_pos].move!(end_pos)
+              if board[end_pos].empty?
                 jump_again = true
-                @jumping_jump = false
+              elsif board[end_pos].possible_jumps.length == 1
+                force_jump(board, end_pos)
+                jump_again = true
               elsif board[end_pos].possible_jumps.length > 1
-                  start_pos = end_pos
-                begin
-                  end_pos = current_player.move_cursor
-                  unless board[start_pos].possible_jumps.include?(end_pos)
-                    raise InvalidSelectionError
-                  end
-                rescue InvalidSelectionError
-                  puts "Thats not a valid jump location."
-                  retry
-                end
-                board[start_pos].move!(end_pos)
-                @jumping_jump = true
+                start_pos = end_pos
+                multipos_jump_selector(current_player, board, start_pos)
               else
                 jump_again = true
               end
@@ -75,6 +62,27 @@ class Checkers
   end
 
   private
+
+  def multipos_jump_selector(current_player, board, start_pos)
+    begin
+      end_pos = current_player.move_cursor
+      unless board[start_pos].possible_jumps.include?(end_pos)
+        raise InvalidSelectionError
+      end
+    rescue InvalidSelectionError
+      puts "Thats not a valid jump location."
+      retry
+    end
+    board[start_pos].move!(end_pos)
+    @multiple_jump = true
+  end
+
+  def force_jump(board, end_pos)
+    start_pos = end_pos
+    end_pos = board[start_pos].possible_jumps.first
+    board[start_pos].move!(end_pos)
+    @multiple_jump = false
+  end
 
   def finish_turn(end_pos)
     board.render(end_pos)
