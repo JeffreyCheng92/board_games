@@ -13,11 +13,12 @@ class InvalidMoveError < StandardError
 end
 
 class Checkers
-  attr_reader :board, :players
+  attr_reader :board, :players, :jumping_jump
 
   def initialize
     @board = Board.new
     @players = [Player.new(board, :white), Player.new(board, :black)]
+    @jumping_jump = false
   end
 
   def play
@@ -30,10 +31,47 @@ class Checkers
         start_pos = get_start_pos(current_player)
         end_pos = get_end_pos(current_player, start_pos)
 
-        board[start_pos].move!(end_pos)
+        # board[start_pos].move!(end_pos)
+
+        jump_again = false
+        until jump_again
+          # debugger
+          if @jumping_jump || board[start_pos].possible_jumps.include?(end_pos)
+
+              board[start_pos].move!(end_pos) unless board[start_pos].empty?
+
+              if board[end_pos].possible_jumps.length == 1
+                start_pos = end_pos
+                end_pos = board[start_pos].possible_jumps.first
+                board[start_pos].move!(end_pos)
+                jump_again = true
+                @jumping_jump = false
+              elsif board[end_pos].possible_jumps.length > 1
+                  start_pos = end_pos
+                begin
+                  end_pos = current_player.move_cursor
+                  unless board[start_pos].possible_jumps.include?(end_pos)
+                    raise InvalidSelectionError
+                  end
+                rescue InvalidSelectionError
+                  puts "Thats not a valid jump location."
+                  retry
+                end
+                board[start_pos].move!(end_pos)
+                @jumping_jump = true
+              else
+                jump_again = true
+              end
+          else
+            jump_again = true
+            board[start_pos].move!(end_pos) unless board[start_pos].empty?
+          end
+        end
+
         finish_turn(end_pos)
 
     end
+    puts "#{players.last.color.to_s.capitalize} has won!"
   end
 
   private
@@ -83,4 +121,11 @@ if __FILE__ == $PROGRAM_NAME
   b = Checkers.new
   b.play
 
+  # b = Board.new
+  # b[[1,1]] = Piece.new(b, [1,1], :white)
+  # b[[3,1]] = Piece.new(b, [3,1], :white)
+  # b[[4,2]] = Piece.new(b, [4,2], :black, true)
+  # # debugger
+  #
+  # p b[[4,2]].possible_moves
 end

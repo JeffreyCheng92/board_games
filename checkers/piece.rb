@@ -42,12 +42,13 @@ class Piece
     (king? ? " ☣ " : " ☢ ").colorize(:"#{@color}")
   end
 
-  private
+  # private
 
   def maybe_promote(pos)
     if color == :white && pos[0] == 7
       board[pos].king = true
-    elsif color == :black && pos[0] == 0
+    elsif color == :black &&
+      pos[0] == 0
       board[pos].king = true
     end
   end
@@ -57,6 +58,7 @@ class Piece
 
     vectors = move_diffs
     vectors.each do |vector|
+
       new_pos = [pos[0] + vector[0], pos[1] + vector[1]]
       next unless board.on_board?(new_pos)
       if !board[new_pos].empty? && board[new_pos].color != color
@@ -65,7 +67,7 @@ class Piece
       end
     end
 
-    jumps.select { |jump| board.on_board?(jump) }
+    jumps
   end
 
   def possible_slides
