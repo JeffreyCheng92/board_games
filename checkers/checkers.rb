@@ -41,13 +41,16 @@ class Checkers
               if board[end_pos].empty?
                 jump_again = true
               elsif board[end_pos].possible_jumps.length == 1
-                force_jump(board, end_pos)
+                start_pos = end_pos
+                end_pos = board[start_pos].possible_jumps.first
+                board[start_pos].move!(end_pos)
+                @multiple_jump = false
                 jump_again = true
               elsif board[end_pos].possible_jumps.length > 1
                 start_pos = end_pos
                 multipos_jump_selector(current_player, board, start_pos)
-              else
-                jump_again = true
+              # else
+              #   jump_again = true
               end
           else
             jump_again = true
