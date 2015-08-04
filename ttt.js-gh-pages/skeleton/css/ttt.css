@@ -1,0 +1,35 @@
+.ttt {
+  position: relative;
+  min-height: 600px;
+  width: 600px;
+  margin: auto;
+  background-color: white;
+  border: 10px solid black;
+}
+
+.square {
+  display: table-cell;
+  float: left;
+  width: 200px;
+  height: 200px;
+  border: 5px solid black;
+  margin: -5px;
+  background: #ccc;
+  text-align: center;
+  font-size: 140px;
+  font-weight: bold;
+}
+
+.square:hover {
+  background-color: yellow;
+}
+
+.square.clickedO {
+  background-color: white;
+  color: navy;
+}
+
+.square.clickedX {
+  background-color: white;
+  color: purple;
+}

@@ -1,0 +1,58 @@
+.toh {
+  border: 1px solid black;
+  height: 902px;
+  width: 906px;
+  margin: auto;
+  /*position: relative;*/
+}
+
+.tower {
+  background-color: gray;
+  float: left;
+  height: 900px;
+  width: 300px;
+  border: 1px solid black;
+  position: relative;
+}
+
+.tower:hover {
+  background-color: orange;
+}
+
+.disc{
+  display: none;
+  /*list-style: none;*/
+  position: absolute;
+  height: 299px;
+  left: -1;
+  width: 300px;
+  border-bottom: 1px solid red;
+  background-color: navy;
+  color: white;
+  font-size: 240px;
+  text-align: center;
+}
+
+.show {
+  display: block;
+}
+
+.disc.top {
+  bottom: 600px;
+}
+
+.disc.middle {
+  bottom: 300px;
+}
+
+.disc.bottom {
+  bottom: 0px;
+}
+/*.disc.clicked {
+  background-color: black;
+}
+
+.tower.clicked {
+  background-color: black;
+
+}*/
