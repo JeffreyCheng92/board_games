@@ -7,7 +7,7 @@ module Slideable
 
     vectors.each do |vector|
       curr_pos = current_pos
-      curr_pos = curr_pos[0] + vector[0], curr_pos[1] + vector[1]
+      curr_pos = add_arrays(curr_pos, vector)
       if inside_boundaries?(curr_pos) && invalid_pos?(board, curr_pos)
         positions << curr_pos if check_color(curr_pos, color)
       end
@@ -20,10 +20,14 @@ module Slideable
 
   private
 
+  def add_arrays(arr1, arr2)
+    return [ arr1[0] + arr2[0], arr1[1] + arr2[1] ]
+  end
+
   def move_helper(board, curr_pos, vector, positions, color)
     until !inside_boundaries?(curr_pos) || invalid_pos?(board, curr_pos)
       positions << curr_pos unless positions.include?(curr_pos)
-      curr_pos = curr_pos[0] + vector[0], curr_pos[1] + vector[1]
+      curr_pos = add_arrays(curr_pos, vector)
 
       if inside_boundaries?(curr_pos) && invalid_pos?(board, curr_pos)
         positions << curr_pos if check_color(curr_pos, color)

@@ -9,7 +9,6 @@ class Player
     @cursor = [0, 0]
     @board = board
     @color = color
-
   end
 
   KEYS = [
@@ -17,15 +16,15 @@ class Player
     "\e[B",
     "\e[C",
     "\e[D",
-    "\r"
+    " "
   ]
 
   def move_cursor
-
       while true
         char = read_char
         break unless handle_cursor(char)
       end
+
       cursor
   end
 
@@ -33,7 +32,6 @@ class Player
 
 
   def handle_cursor(input)
-
     row, col = cursor
 
     case input
@@ -45,7 +43,7 @@ class Player
       col +=1
     when "\e[D"
       col -= 1
-    when "\r"
+    when " "
       self.cursor = [row, col]
       return false
     else
@@ -53,14 +51,10 @@ class Player
     end
 
     @cursor = [keep_within_bounds(row), keep_within_bounds(col)]
-
     board.render(cursor)
   end
 
   def keep_within_bounds(num)
     [0, [num, 7].min].max
   end
-
-
-
 end

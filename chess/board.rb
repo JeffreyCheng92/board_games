@@ -8,7 +8,6 @@ class Board
   attr_accessor :move_array, :selected, :selected_moves
   attr_reader :grid
 
-
   def initialize
     @grid = Array.new(8){ Array.new(8) {EmptyPiece.new}  }
     @selected = false
@@ -26,7 +25,6 @@ class Board
     end
 
     seed_pawns
-
   end
 
   def [](pos)
@@ -46,7 +44,6 @@ class Board
     if selected
       possible_moves = selected_moves
       selected = false
-
     else
       possible_moves = self[cursor].possible_moves unless self[cursor].empty?
     end
@@ -62,20 +59,17 @@ class Board
     end
   end
 
-
   def check?(players)
     king_pos = get_own_king(players)
     other_pos = other_color_moves(players)
     other_pos.include?(king_pos)
   end
 
-
   def check_mate?(players)
 
     return false if !check?(players)
 
     kings_moves = get_kings_moves(players)
-
     own_pieces = get_own_color_pieces(players)
 
     own_pieces.each do |piece|
@@ -100,8 +94,6 @@ class Board
     puts "#{players.second.capitalize} Wins!"
     true
   end
-
-
 
   private
 
@@ -161,8 +153,4 @@ class Board
        idx2.even? ? color_switch[1] : color_switch[0]
     end
   end
-
-
-
-
 end

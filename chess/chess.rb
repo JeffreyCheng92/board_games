@@ -1,6 +1,5 @@
 class CheckError < StandardError
 
-
 end
 
 load 'board.rb'
@@ -17,47 +16,52 @@ class Chess
     @players = [player1, player2]
     @start_pos = nil
     @end_pos = nil
-
   end
 
-
   def test
-    board.seed_pieces
-
+    seed_board
     @board.render(players.last.cursor)
     begin
       until won?
-        puts "#{players.first.color.capitalize}'s Turn"
-        puts "Check" if @board.check?(players)
-
-
-        @start_pos = get_start_move
-
-        board.selected_moves = board[start_pos].possible_moves
-        board.selected = true
-
-        @end_pos = get_end_move
-
-        players.last.cursor = end_pos
-        board.selected = false
-        
-        move_piece
-
-        if @board.check?(players)
-          board[end_pos].escape_check(start_pos)
-          raise CheckError.new("Check!")
-        end
-
+        play_turn
+        check_check
         change_turn
       end
 
     rescue CheckError => e
       puts e.message
       retry
-
     end
   end
+
   private
+
+  def seed_board
+    board.seed_pieces
+  end
+
+  def check_check
+    if @board.check?(players)
+      board[end_pos].escape_check(start_pos)
+      raise CheckError.new("Check!")
+    end
+  end
+
+  def play_turn
+    puts "#{players.first.color.capitalize}'s Turn"
+    puts "Check" if @board.check?(players)
+    @start_pos = get_start_move
+
+    board.selected_moves = board[start_pos].possible_moves
+    board.selected = true
+
+    @end_pos = get_end_move
+
+    players.last.cursor = end_pos
+    board.selected = false
+
+    move_piece
+  end
 
   def change_turn
     @players.rotate!
@@ -73,6 +77,7 @@ class Chess
       puts "Pick piece of your own color."
       start_pos = players.first.move_cursor
     end
+
     start_pos
   end
 
@@ -89,8 +94,6 @@ class Chess
   def move_piece
     board[start_pos].move!(end_pos)
   end
-
-
 end
 
  g = Chess.new
